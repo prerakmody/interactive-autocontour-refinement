@@ -1,0 +1,53 @@
+services:
+  frontend:
+    container_name: LUMC-LKEB-InteractiveServer-FrontEnd
+    build: 
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "50000:50000"
+    # volumes: # only for development
+    #   - ./src/frontend/:/app
+    environment:
+      - NODE_ENV=development
+      - USE_HTTPS=true
+      - USE_DOCKER=true
+    command: ["sh", "-c", "npx webpack --mode development && USE_HTTPS=${USE_HTTPS:-true} USE_DOCKER=true npm start"]
+    # depends_on:
+    #   - backend
+
+  backend:
+    container_name: LUMC-LKEB-InteractiveServer-BackEnd
+    build: 
+      context: .
+      dockerfile: src/backend/Dockerfile-pip
+    ports:
+      - "55000:55000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - USE_HTTPS=true
+      - USE_DOCKER=true
+    volumes: # only for development
+      - ./src/backend/:/app
+    # depends_on:
+    #   - database
+
+  database:
+    container_name: LUMC-LKEB-InteractiveServer-Database
+    image: orthancteam/orthanc:24.7.3
+    ports:
+      - "8042:8042"
+    environment:
+      - DICOM_WEB_PLUGIN_ENABLED=true
+      - ORTHANC__OHIF__DATA_SOURCE=dicom-web
+      - OHIF_PLUGIN_ENABLED=true
+    volumes:
+      - orthanc-config:/etc/orthanc
+      - orthanc-db:/var/lib/orthanc/db/
+
+volumes:
+  orthanc-db:
+    external: true
+  orthanc-config:
+    external: true
+  

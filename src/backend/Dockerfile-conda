@@ -1,0 +1,30 @@
+# Use official Miniconda image
+FROM continuumio/miniconda3
+RUN conda update -n base -c defaults conda --yes
+
+# Set working directory
+WORKDIR /app
+
+# Setup conda environment
+RUN conda create --name interactive-refinement python==3.12.4 -y
+
+# Install pytorch and torchvision into the interactive-refinement environment
+# RUN conda install -n interactive-refinement pytorch==2.4.0 torchvision==0.19.0 pytorch-cuda=12.4 -c pytorch -c nvidia -y
+
+# Activate the environment
+SHELL ["/bin/bash", "-c"]
+RUN echo "conda activate interactive-refinement" >> ~/.bashrc
+ENV PATH /opt/conda/envs/interactive-refinement/bin:$PATH
+
+# Install from requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application
+COPY src ./src
+
+# # Expose port
+# EXPOSE 8000
+
+# # Run the backend server
+# CMD ["python", "src/backend/interactive-server.py"]

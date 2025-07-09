@@ -1,0 +1,24 @@
+server {
+    listen 443 ssl;
+    server_name 34.34.88.74;
+
+    ssl_certificate /home/prerakmody/code/cornerstone3D-trials/src/assets/hostCert.pem;
+    ssl_certificate_key /home/prerakmody/code/cornerstone3D-trials/src/assets/hostKey.pem;
+
+    # Default location block
+    location / {
+        proxy_pass https://localhost:50000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 80;
+    server_name 34.34.88.74;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
