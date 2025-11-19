@@ -30,19 +30,17 @@ It contains three components:
     - This will create two volumes: `orthanc-config` and `orthanc-db`.
     - You can check the volumes using the command: `docker volume ls`
 
-3. Copy model files to the `cornerstone3D-trials` directory:
-    - In [_models/](./_models/), create a directory named `UNetv1__DICE-LR1e3__W5-B32-MoreData__Cls1-Pt-Scr__Trial1`.
+3. Copy model files to the `interactive-autocontour-refinement` directory:
+    - In [src/backend/_models/](./src/backend/_models/), create a directory named `UNetv1__DICE-LR1e3__W5-B32-MoreData__Cls1-Pt-Scr__Trial1`.
       - Create a subdirectory named `epoch_0090` inside it.
       - Download the model files from [here](https://github.com/prerakmody/cornerstone3D-trials/releases/download/v0.1/epoch_0090)
   
 4. Generate `hostCert.pem` and `hostKey.pem`
     - Run `pip install cryptography && python src/backend/utils/certUtils.py`
-    - These will automatically be saved to [_keys](./_keys/) folder.
+    - These will automatically be saved to [src/backend/_keys](./src/backend/_keys/) folder.
 
-4. Finally, run the following command to start the server:
+5. Finally, run the following command to start the server:
     ```bash
-    git clone git@github.com:prerakmody/cornerstone3D-trials.git
-    cd cornerstone3D-trials
     docker-compose up --build
     ```
       - This will build the images and start the containers for the frontend, backend, and DICOM server.
